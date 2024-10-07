@@ -44,9 +44,4 @@ export const orthrographyCheckUseCase = async (
 
   const json_res = JSON.parse(completion.choices[0].message.content);
   return json_res;
-
-  return {
-    prompt: prompt,
-    api_key: process.env.OPENAI_API_KEY,
-  };
 };
