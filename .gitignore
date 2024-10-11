@@ -3,6 +3,8 @@
 /node_modules
 /build
 
+/generated/audios/*.mp3
+
 # Logs
 logs
 *.log
