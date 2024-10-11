@@ -4,6 +4,7 @@
 /build
 
 /generated/audios/*.mp3
+/generated/uploads
 
 # Logs
 logs
