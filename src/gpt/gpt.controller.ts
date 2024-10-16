@@ -15,6 +15,8 @@ import {
 import { GptService } from './gpt.service';
 import {
   AudioToTextDto,
+  ImageGenerationDto,
+  ImageVariationDto,
   OrthographyCheckDto,
   ProsConsDiscusserDto,
   TextToAudioDto,
@@ -110,5 +112,23 @@ export class GptController {
     @Body() audioToTextDto: AudioToTextDto,
   ) {
     return this.gptService.audioToText(file, audioToTextDto);
+  }
+
+  @Post('image-generation')
+  async imageGeneration(@Body() imageGenerationDto: ImageGenerationDto) {
+    return await this.gptService.imageGeneration(imageGenerationDto);
+  }
+
+  @Get('image-generation/:image')
+  async getGeneratedImage(@Param('image') image: string, @Res() res: Response) {
+    const filePath = await this.gptService.getGeneratedImage(image);
+    res.setHeader('Content-Type', 'image/png');
+    res.status(HttpStatus.OK);
+    res.sendFile(filePath);
+  }
+
+  @Post('image-variation')
+  async imageVariation(@Body() imageVariationDto: ImageVariationDto) {
+    return await this.gptService.imageVariation(imageVariationDto);
   }
 }
