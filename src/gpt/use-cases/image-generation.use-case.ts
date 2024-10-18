@@ -29,7 +29,7 @@ export const imageGenerationUseCase = async (
     const fileName = path.basename(url);
 
     return {
-      localPath: `${process.env.SERVER_URL}/gpt/image-generation/${fileName}`,
+      url: `${process.env.SERVER_URL}/gpt/image-generation/${fileName}`,
       openAiPath: response.data[0].url,
       revised_prompt: response.data[0].revised_prompt,
     };
@@ -39,7 +39,7 @@ export const imageGenerationUseCase = async (
   const maskPath = await downloadBase64ImageAsPng(maskImage, true);
 
   const response = await openAi.images.edit({
-    model: 'dall-e-3',
+    model: 'dall-e-2',
     prompt,
     image: fs.createReadStream(pngImagePath),
     mask: fs.createReadStream(maskPath),
@@ -52,7 +52,7 @@ export const imageGenerationUseCase = async (
   const fileName = path.basename(url);
 
   return {
-    localPath: `${process.env.SERVER_URL}/gpt/image-generation/${fileName}`,
+    url: `${process.env.SERVER_URL}/gpt/image-generation/${fileName}`,
     openAiPath: response.data[0].url,
     revised_prompt: response.data[0].revised_prompt,
   };

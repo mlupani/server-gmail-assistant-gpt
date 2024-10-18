@@ -26,7 +26,7 @@ export const imageVariationUseCase = async (
   const localPath = `${process.env.SERVER_URL}/gpt/image-generation/${image}`;
 
   return {
-    localPath: localPath,
+    url: localPath,
     openAiPath: response.data[0].url,
     revised_prompt: response.data[0].revised_prompt,
   };
