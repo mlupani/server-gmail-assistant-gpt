@@ -11,7 +11,7 @@ export const getMessagesList = async (openAi: OpenAI, options: Options) => {
   return messages.data
     .map((message) => ({
       role: message.role,
-      content: message.content,
+      content: message.content.map((content) => (content as any).text.value),
     }))
     .reverse();
 };
