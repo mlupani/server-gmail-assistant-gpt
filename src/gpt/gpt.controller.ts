@@ -1,134 +1,14 @@
-import {
-  Body,
-  Controller,
-  FileTypeValidator,
-  Get,
-  HttpStatus,
-  MaxFileSizeValidator,
-  Param,
-  ParseFilePipe,
-  Post,
-  Res,
-  UploadedFile,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { GptService } from './gpt.service';
-import {
-  AudioToTextDto,
-  ImageGenerationDto,
-  ImageVariationDto,
-  OrthographyCheckDto,
-  ProsConsDiscusserDto,
-  TextToAudioDto,
-  TranslateDto,
-} from './dto';
-import { Response } from 'express';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'Multer';
+import { GenerateTextDto } from './dto';
 
 @Controller('gpt')
 export class GptController {
   constructor(private readonly gptService: GptService) {}
 
-  @Post('orthography-check')
-  orthographyCheck(@Body() orthographyCheckDto: OrthographyCheckDto) {
-    return this.gptService.orthographyCheck(orthographyCheckDto);
-  }
-
-  @Post('pros-cons-discusser')
-  async prosConsDiscusser(
-    @Body() prosConsDiscusserDto: ProsConsDiscusserDto,
-    @Res() res: Response,
-  ) {
-    const stream =
-      await this.gptService.prosConsDiscusser(prosConsDiscusserDto);
-    res.setHeader('Content-Type', 'application/json');
-    res.status(HttpStatus.OK);
-
-    for await (const chunk of stream) {
-      const piece = chunk.choices[0].delta.content || '';
-      console.log(piece);
-      res.write(piece);
-    }
-
-    res.end();
-  }
-
-  @Post('translate')
-  translate(@Body() translateDto: TranslateDto) {
-    return this.gptService.translate(translateDto);
-  }
-
-  @Get('text-to-audio/:fileId')
-  async textToAudioGetter(
-    @Res() res: Response,
-    @Param('fileId') fileId: string,
-  ) {
-    const filePath = await this.gptService.textToAudioGetter(fileId);
-
-    res.setHeader('Content-Type', 'audio/mp3');
-    res.status(HttpStatus.OK);
-    res.sendFile(filePath);
-  }
-
-  @Post('text-to-audio')
-  async textToAudio(
-    @Body() textToAudioDto: TextToAudioDto,
-    @Res() res: Response,
-  ) {
-    const filePath = await this.gptService.textToAudio(textToAudioDto);
-
-    res.setHeader('Content-Type', 'audio/mp3');
-    res.status(HttpStatus.OK);
-    res.sendFile(filePath);
-  }
-
-  @Post('audio-to-text')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './generated/uploads',
-        filename: (req, file, callback) => {
-          const fileExtension = file.originalname.split('.').pop();
-          const fileName = `${new Date().getTime()}.${fileExtension}`;
-          return callback(null, fileName);
-        },
-      }),
-    }),
-  )
-  async audioToText(
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({
-            maxSize: 1000 * 1024 * 5,
-            message: 'File is bigger than 5 mb ',
-          }),
-          new FileTypeValidator({ fileType: 'audio/*' }),
-        ],
-      }),
-    )
-    file: Express.Multer.File,
-    @Body() audioToTextDto: AudioToTextDto,
-  ) {
-    return this.gptService.audioToText(file, audioToTextDto);
-  }
-
-  @Post('image-generation')
-  async imageGeneration(@Body() imageGenerationDto: ImageGenerationDto) {
-    return await this.gptService.imageGeneration(imageGenerationDto);
-  }
-
-  @Get('image-generation/:image')
-  async getGeneratedImage(@Param('image') image: string, @Res() res: Response) {
-    const filePath = await this.gptService.getGeneratedImage(image);
-    res.setHeader('Content-Type', 'image/png');
-    res.status(HttpStatus.OK);
-    res.sendFile(filePath);
-  }
-
-  @Post('image-variation')
-  async imageVariation(@Body() imageVariationDto: ImageVariationDto) {
-    return await this.gptService.imageVariation(imageVariationDto);
+  @Post('generate-text')
+  generateText(@Body() generateTextDto: GenerateTextDto) {
+    console.log({ generateTextDto });
+    return this.gptService.generateText(generateTextDto);
   }
 }

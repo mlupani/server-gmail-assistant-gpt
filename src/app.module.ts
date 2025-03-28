@@ -3,10 +3,9 @@ import { GptModule } from './gpt/gpt.module';
 import { GptController } from './gpt/gpt.controller';
 import { GptService } from './gpt/gpt.service';
 import { ConfigModule } from '@nestjs/config';
-import { SamAssistantModule } from './sam-assistant/sam-assistant.module';
 
 @Module({
-  imports: [GptModule, ConfigModule.forRoot(), SamAssistantModule],
+  imports: [GptModule, ConfigModule.forRoot()],
   controllers: [GptController],
   providers: [GptService],
 })
