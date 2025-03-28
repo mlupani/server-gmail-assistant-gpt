@@ -15,8 +15,7 @@ export class GptService {
         prompt: generateTextDto.prompt,
         systemPrompt: generateTextDto.systemPrompt,
       });
-    } catch (error) {
-      console.log(error);
+    } catch {
       throw new InternalServerErrorException('Error generating text');
     }
   }

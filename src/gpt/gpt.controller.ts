@@ -8,7 +8,6 @@ export class GptController {
 
   @Post('generate-text')
   generateText(@Body() generateTextDto: GenerateTextDto) {
-    console.log({ generateTextDto });
     return this.gptService.generateText(generateTextDto);
   }
 }
